@@ -1,12 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const Tarefa = require('./models/Tarefa');
+const Tarefa = require('./tarefa.js');
 const app = express();
 app.use(cors());
 app.use(express.json());
 mongoose.connect(
- 'mongodb+srv://fatec:uvaroxa2025@cluster.mongodb.net/tarefas?retryWrites=true&w=majority',
+ 'mongodb+srv://uvaroxa2025:uvaroxa2025@cluster.mongodb.net/tarefas?retryWrites=true&w=majority',
  { useNewUrlParser:true, useUnifiedTopology:true }
 )
 .then(()=>console.log('MongoDB Atlas conectado'))
