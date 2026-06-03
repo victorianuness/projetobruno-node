@@ -1,28 +1,21 @@
 {
-  "dependencies": {
-    "cors": "^2.8.6",
-    "express": "^5.2.1",
-    "mongoose": "^9.6.2"
-  },
-  "name": "projetobruno-node",
+  "name": "webnode",
   "version": "1.0.0",
   "description": "",
+  "license": "ISC",
+  "author": "Prof.Bruno",
+  "type": "commonjs",
   "main": "app.js",
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/victorianuness/projetobruno-node.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/victorianuness/projetobruno-node/issues"
-  },
-  "homepage": "https://github.com/victorianuness/projetobruno-node#readme"
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "mongodb-memory-server": "^11.2.0",
+    "mongoose": "^9.6.3",
+    "mysql2": "^3.22.4",
+    "sequelize": "^6.37.8"
+  }
 }

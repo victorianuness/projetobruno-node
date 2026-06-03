@@ -1,37 +1,91 @@
 const express = require('express');
-const mongoose = require('mongoose');
+const { Sequelize, DataTypes } = require('sequelize');
 const cors = require('cors');
-const Tarefa = require('./tarefa.js');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect(
-  'mongodb+srv://victoria:uvaroxa2025@cluster0.abcde.mongodb.net/tarefas?retryWrites=true&w=majority'
-)
-.then(() => console.log('MongoDB Atlas conectado'))
-.catch(err => console.log('Erro ao conectar:', err));
 
-// Rotas
-app.post('/tarefas', async (req, res) => { 
-  const t = await Tarefa.create(req.body); 
-  res.json(t); 
+const sequelize = new Sequelize('tarefas_db', 'root', '', {
+  host: 'localhost',
+  dialect: 'mysql',
+  logging: false 
 });
 
-app.get('/tarefas', async (req, res) => { 
-  const t = await Tarefa.find(); 
-  res.json(t); 
+
+const Tarefa = sequelize.define('Tarefa', {
+  titulo: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  concluida: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  escolha:{
+    type: DataTypes.STRING,
+    allowNull: true
+  
+},
+},
+{ 
+  timestamps: false 
 });
 
-app.put('/tarefas/:id', async (req, res) => { 
-  const t = await Tarefa.findByIdAndUpdate(req.params.id, req.body, { new: true }); 
-  res.json(t); 
+
+sequelize.sync() 
+  .then(() => {
+    console.log('✅ MySQL conectado e Tabelas sincronizadas!');
+    app.listen(3000, () => console.log('Servidor rodando na porta 3000'));
+  })
+  .catch(err => {
+    console.error('Erro ao conectar no MySQL:', err.message);
+  });
+
+
+
+app.get('/', (req, res) => res.send('API Fatec - MySQL Ativa'));
+
+
+app.get('/tarefas', async (req, res) => {
+  try {
+    const lista = await Tarefa.findAll();
+    res.json(lista);
+  } catch (err) {
+    res.status(500).json({ erro: err.message });
+  }
 });
 
-app.delete('/tarefas/:id', async (req, res) => { 
-  await Tarefa.findByIdAndDelete(req.params.id); 
-  res.json({ ok: true }); 
+
+app.post('/tarefas', async (req, res) => {
+  try {
+    const nova = await Tarefa.create(req.body);
+    res.status(201).json(nova);
+  } catch (err) {
+    res.status(400).json({ erro: err.message });
+  }
 });
 
-app.listen(3000, () => console.log('Servidor rodando'));
+
+app.put('/tarefas/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    await Tarefa.update(req.body, { where: { id } });
+    const atualizada = await Tarefa.findByPk(id);
+    res.json(atualizada);
+  } catch (err) {
+    res.status(400).json({ erro: err.message });
+  }
+});
+
+
+app.delete('/tarefas/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    await Tarefa.destroy({ where: { id } });
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(400).json({ erro: err.message });
+  }
+});
